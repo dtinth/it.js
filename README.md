@@ -1,12 +1,13 @@
-It
+It (it.js)
 ==
 
 `It` is a library to make it easier to create accessor/iterator functions,
-for use with things like `Array.prototype.map` (`_.map`) or `Array.prototype.filter` (`_.filter`).
+for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
+It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/).
 
 This library is inspired by the article
 [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
-by Reginald Braithwaite, but I want it to look more object oriented.
+by Reginald Braithwaite, but I want it to look more fluent and chainable.
 
 example.js
 ----------
@@ -23,10 +24,11 @@ var strings = ['this', 'is', 'a', 'Book']
 
 It
 --
-`It` provides an identity function, just like _.identity, but shorter.
+`It` provides an identity function, just like `_.identity`, but much shorter.
+
+maps an array with itself... pretty useless
 
 ```javascript
-// map an array with itself... pretty useless
 console.log(_.map(numbers, It))
 ```
 
@@ -35,8 +37,9 @@ console.log(_.map(numbers, It))
 [ 3, 1, 4, 1, 5 ]
 ```
 
+gets a sorted copy of an array
+
 ```javascript
-// get a sorted copy of an array
 console.log(_.sortBy(numbers, It))
 console.log(_.sortBy(strings, It))
 ```
@@ -49,15 +52,16 @@ console.log(_.sortBy(strings, It))
 
 .get
 ----
-`.get` returns the value of a property. Here's where things get interesting.
+`.get` returns the value of a property. Here's where things get interesting...
 
 ```javascript
 // equivalent to function(x) { return x.length }
 var getLength = It.get('length')
 ```
 
+sort the strings by their length
+
 ```javascript
-// sort the strings by their length
 console.log(_.sortBy(strings, getLength))
 ```
 
@@ -68,15 +72,16 @@ console.log(_.sortBy(strings, getLength))
 
 .send
 -----
-`.send(...)` calls a method on an object
+Use `.send(...)` to call a method on an object.
 
 ```javascript
 // equivalent to function(x) { return x.toUpperCase() }
 var toUpperCase = It.send('toUpperCase')
 ```
 
+map all strings to uppercase:
+
 ```javascript
-// map all strings to uppercase
 console.log(_.map(strings, toUpperCase))
 ```
 
@@ -85,8 +90,9 @@ console.log(_.map(strings, toUpperCase))
 [ 'THIS', 'IS', 'A', 'BOOK' ]
 ```
 
+therefore, case-insensitive sorting is easy:
+
 ```javascript
-// therefore, case-insensitive sorting is easy
 console.log(_.sortBy(strings, toUpperCase))
 ```
 
@@ -102,6 +108,9 @@ Of course, all of these are chainable.
 ```javascript
 // equivalent to function(x) { return x.substr(0, 1).toUpperCase() }
 var firstCharacterCapitalized = It.send('substr', 0, 1).send('toUpperCase')
+```
+
+```javascript
 console.log(_.map(strings, firstCharacterCapitalized))
 ```
 
@@ -110,10 +119,13 @@ console.log(_.map(strings, firstCharacterCapitalized))
 [ 'T', 'I', 'A', 'B' ]
 ```
 
-Let's move to something more practical...
+---
+
+Now, let's move on and try to use chaining to do something more practical...
+
+Here we have a list of people. (name generation thanks to chance.js)
 
 ```javascript
-// Here we have a list of people. (name generation thanks to chance.js)
 var addressBook = [
   { first: 'Sifwa', last: 'Duhav', phone: '(416) 984-4454' },
   { first: 'Moc', phone: '(898) 983-5755' },
@@ -121,21 +133,16 @@ var addressBook = [
   { first: 'Betu', last: 'Jol', phone: '(219) 234-9591' },
   { first: 'Fuhetu', last: 'Ra', phone: '(631) 437-2332' }
 ]
-console.log(addressBook)
 ```
 
+Let's sort them by the length of first name!
 
-```
-[ { first: 'Sifwa', last: 'Duhav', phone: '(416) 984-4454' },
-  { first: 'Moc', phone: '(898) 983-5755' },
-  { first: 'Diblacbo', last: 'Li', phone: '(258) 838-8314' },
-  { first: 'Betu', last: 'Jol', phone: '(219) 234-9591' },
-  { first: 'Fuhetu', last: 'Ra', phone: '(631) 437-2332' } ]
+```javascript
+// equivalent to function(x) { return x.first.length }
+var firstNameLength = It.get('first').get('length')
 ```
 
 ```javascript
-// Let's sort them by the length of first name!
-var firstNameLength = It.get('first').get('length')
 console.log(_.sortBy(addressBook, firstNameLength))
 ```
 
@@ -151,10 +158,12 @@ console.log(_.sortBy(addressBook, firstNameLength))
 .set
 ----
 `.set(property, value)` sets a property on an object.
-The result of this operation will be the invoked object, so you can chain
+The result of this operation will be the invoked object,
+so you can chain more operations (something like `.set('a','b').set('c','d')`).
+
+Let's set everyone's score to zero! Yes, scores in an address book!
 
 ```javascript
-// Let's set everyone's score to zero! Yes, scores in an address book!
 _.each(addressBook, It.set('score', 0))
 console.log(addressBook)
 ```
@@ -176,12 +185,15 @@ console.log(addressBook)
 
 .maybe
 ------
-`.maybe(func)` invokes a function only if it's truthy.
+`.maybe(func)` invokes a passed function with current value only if the current value is truthy.
+
+In the address book above, Moc doesn't have a last name.
+Without `.maybe()`, we will end up calling `.toLowerCase()` on `undefined`,
+and an Error will be thrown.
+
+We want to call `.toLowerCase()` only when we have something to call on.
 
 ```javascript
-// One person in an address book doesn't have lastname.
-// Without `.maybe()` we might call `.toLowerCase()` on `undefined`.
-//
 // equivalent to function(x) { return x.last && x.last.toLowerCase() }
 var lastNameLowered = It.get('last').maybe(It.send('toLowerCase'))
 console.log(_.map(addressBook, lastNameLowered))
@@ -192,8 +204,9 @@ console.log(_.map(addressBook, lastNameLowered))
 [ 'duhav', undefined, 'li', 'jol', 'ra' ]
 ```
 
+Then you can filter out falsy value by using `_.filter(..., It)`.
+
 ```javascript
-// Then you can filter out falsy value by using `_.filter(..., It)`.
 console.log(_.filter(_.map(addressBook, lastNameLowered), It))
 ```
 
@@ -202,10 +215,11 @@ console.log(_.filter(_.map(addressBook, lastNameLowered), It))
 [ 'duhav', 'li', 'jol', 'ra' ]
 ```
 
+.or
+---
+Instead of using `.maybe`, we can use `.or` to put a default value.
+
 ```javascript
-// .or
-// ---
-// Instead of using `.maybe`, we can use `.or` to put a default value.
 var lastNameLowered2 = It.get('last').or('None').send('toLowerCase')
 console.log(_.map(addressBook, lastNameLowered2))
 ```
@@ -220,8 +234,9 @@ console.log(_.map(addressBook, lastNameLowered2))
 `.instantiate(Constructor)` can be used to quickly map things
 into an instance.
 
+Here we have a Person class.
+
 ```javascript
-// Here we have a Person class.
 function Person(info) {
   this.info = info
 }
@@ -237,9 +252,9 @@ Person.prototype.greet = function() {
 ```
 ```
 
+We can map everyone in the address book into a new Person instance!
+
 ```javascript
-// We can map everyone in the address book into a new Person instance!
-//
 // equivalent to function(x) { return new Person(x) }
 var people = _.map(addressBook, It.instantiate(Person))
 _.each(people, It.send('greet'))
@@ -257,34 +272,39 @@ uses the value of `this` instead of the value of passed argument.
 
 You can use it to quickly make an accessor function
 
+`Person#getFirstName` returns the first name.
+
 ```javascript
-// Return the first name.
-//
 // equivalent to function() { return this.info.first }
 Person.prototype.getFirstName = It.self.get('info').get('first')
 ```
 
+This function takes a last name, and returns a name suffix.
+No need to check of `null` here, we'll let `.maybe` do it.
+
 ```javascript
-// this function takes a last name, and returns a name suffix.
-// no need to check of nulls here, we'll let `.maybe` do it.
 function initial(string) {
   return ' ' + string.substr(0, 1) + '.'
 }
 ```
 
+`Person#getLastInitial` returns the initial of last name.
+If the person does not have last name, then return empty string.
+
 ```javascript
-// Return the initial of last name.
-// If the person does not have last name, then return empty string.
-//
 // equivalent to function() { return (this.info.last && initial(this.info.last)) || '' }
 Person.prototype.getLastInitial = It.self.get('info').get('last').maybe(initial).or('')
 ```
 
+We can then redefine the `getName` method to make use of them:
+
 ```javascript
-// redefine the greet function to make use of it
 Person.prototype.getName = function() {
   return this.getFirstName() + this.getLastInitial()
 }
+```
+
+```javascript
 _.each(people, It.send('greet'))
 ```
 
@@ -297,22 +317,25 @@ Hello! I am "Fuhetu R."
 --------
 You can use `.derive` to compose your own functionality.
 
+Here we have these vectors...
+
 ```javascript
-// Here we have vectors...
 var vectors = [
   { x: 1, y: 5 }, { x: 5, y: 1 }, { x: 2, y: -3 }
 ]
 ```
 
+We also have a square function...
+
 ```javascript
-// We have a square function...
 function square(x) {
   return x * x
 }
 ```
 
+Let's get the square of x and y components of these vectors!
+
 ```javascript
-// Let's get the square of x and y components of these vectors!
 console.log(_.map(vectors, It.get('x').compose(square)))
 console.log(_.map(vectors, It.get('y').compose(square)))
 ```
@@ -352,8 +375,9 @@ console.log(getBA(test))
 `.tap` invokes the passed function with the current value,
 and returns the current value.
 
+log the numbers and while mapping to get the squares
+
 ```javascript
-// log the numbers and while mapping to get the squares
 console.log(numbers)
 console.log(_.map(numbers, It.tap(console.log).compose(square)))
 ```
@@ -369,8 +393,9 @@ console.log(_.map(numbers, It.tap(console.log).compose(square)))
 [ 9, 1, 16, 1, 25 ]
 ```
 
+make everyone greet while mapping to get their first name
+
 ```javascript
-// make everyone greet while mapping to get their first name
 console.log(_.map(people, It.tap(It.send('greet')).send('getFirstName')))
 ```
 
@@ -383,4 +408,8 @@ Hello! I am "Betu J."
 Hello! I am "Fuhetu R."
 [ 'Sifwa', 'Moc', 'Diblacbo', 'Betu', 'Fuhetu' ]
 ```
+
+License
+-------
+MIT Licensed
 
