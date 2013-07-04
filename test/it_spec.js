@@ -42,6 +42,9 @@ describe('It', function() {
     it('should call a method', function() {
       expect(It.get('a').send('toUpperCase')(b)).to.equal('THIS IS A TEST')
     })
+    it('should also accept a function', function() {
+      expect(It.get('a').send(''.toUpperCase)(b)).to.equal('THIS IS A TEST')
+    })
     it('should call a method with one parameter', function() {
       expect(It.send('toString', 36)(1296)).to.equal('100')
     })
@@ -49,6 +52,12 @@ describe('It', function() {
       expect(It.send('getArgs')(c)).to.deep.equal([])
       expect(It.send('getArgs', 55555)(c)).to.deep.equal([55555])
       expect(It.send('getArgs', 'w', 't', 'f')(c)).to.deep.equal(['w', 't', 'f'])
+    })
+    it('should call a method with multiple parameters and accept a function', function() {
+      var getArgs = c.getArgs
+      expect(It.send(getArgs)(c)).to.deep.equal([])
+      expect(It.send(getArgs, 55555)(c)).to.deep.equal([55555])
+      expect(It.send(getArgs, 'w', 't', 'f')(c)).to.deep.equal(['w', 't', 'f'])
     })
   })
 
@@ -79,6 +88,16 @@ describe('It', function() {
     })
   })
 
+  describe('.or', function() {
+    it('should return the passed value if it\'s falsy', function() {
+      expect(It.or(1)(0)).to.equal(1)
+      expect(It.or(false)(0)).to.equal(false)
+    })
+    it('should return the invoked value if it\'s truthy', function() {
+      expect(It.or(1)(444)).to.equal(444)
+    })
+  })
+
   describe('.instantiate', function() {
     function Value(x) {
       this.value = x
@@ -101,6 +120,15 @@ describe('It', function() {
       expect(It.tap(It.set('a', 555))(obj)).to.equal(obj)
       expect(obj.a).to.equal(555)
       expect(It.tap(It.set('a', 1234)).get('a')(obj)).to.equal(1234)
+    })
+  })
+
+  describe('.self', function() {
+    it('should use the context instead of passed argument', function() {
+      expect(It.self.call(a)).to.equal(a)
+      expect(It.self.get('a').call(a)).to.equal(1)
+      expect(It.self.get('b').get('c').call(a)).to.equal(2)
+      expect(It.self.send('getContext').call(c)).to.equal(c)
     })
   })
 

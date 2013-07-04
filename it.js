@@ -19,23 +19,23 @@ var It = (function() {
     return instance
   }
 
-  function derive(a, b) {
-    return function derivedFunction(x) {
-      return a(b(x))
+  function compose(a, b) {
+    return function composedFunction(x) {
+      return a(b.call(this, x))
     }
   }
 
   It.fn = {
-    derive: function(accessor) {
-      return decorate(derive(accessor, this))
+    compose: function(accessor) {
+      return decorate(compose(accessor, this))
     },
     get: function(property) {
-      return this.derive(function(object) {
+      return this.compose(function(object) {
         return object[property]
       })
     },
     set: function(property, value) {
-      return this.derive(function(object) {
+      return this.compose(function(object) {
         object[property] = value
         return object
       })
@@ -43,24 +43,37 @@ var It = (function() {
     send: function(methodName) {
       var args = slice.call(arguments, 1)
       var arg = args[0]
-      return this.derive(
+      if (typeof methodName == 'function') {
+        var func = methodName
+        return this.compose(
+          args.length === 0 ? function(object) { return func.call(object) } :
+          args.length === 1 ? function(object) { return func.call(object, arg) } :
+          function(object) { return func.apply(object, args) }
+        )
+      }
+      return this.compose(
         args.length === 0 ? function(object) { return object[methodName]() } :
         args.length === 1 ? function(object) { return object[methodName](arg) } :
         function(object) { return object[methodName].apply(object, args) }
       )
     },
+    or: function(defaultValue) {
+      return this.compose(function(value) {
+        return value || defaultValue
+      })
+    },
     maybe: function(func) {
-      return this.derive(function(value) {
+      return this.compose(function(value) {
         return value && func(value)
       })
     },
     instantiate: function(Constructor) {
-      return this.derive(function(value) {
+      return this.compose(function(value) {
         return new Constructor(value)
       })
     },
     tap: function(func) {
-      return this.derive(function(value) {
+      return this.compose(function(value) {
         func(value)
         return value
       })
@@ -80,6 +93,12 @@ var It = (function() {
     }
     return comparator
   }
+
+  It.self = decorate(function() {
+    return this
+  })
+
+  It.decorate = decorate
 
   return decorate(It)
 
