@@ -1,7 +1,7 @@
-It.js
+it.js
 ==
 
-`It.js` is a library to make it easier to create accessor/iterator functions,
+`it.js` is a library to make it easier to create accessor/iterator functions,
 for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
 It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/).
 
@@ -365,7 +365,7 @@ Hello! I am "Fuhetu R."
 
 .compose
 --------
-You can use `.derive` to compose your own functionality.
+You can use `.compose` to compose your own functionality.
 
 Here we have these vectors...
 
