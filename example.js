@@ -3,9 +3,6 @@
 // It
 // ==
 //
-// README.md / example.js
-// ----------------------
-//
 // `It` is a library to make it easier to create accessor/iterator functions,
 // for use with things like `Array.prototype.map` (`_.map`) or `Array.prototype.filter` (`_.filter`).
 //
@@ -13,6 +10,9 @@
 // [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
 // by Reginald Braithwaite, but I want it to look more object oriented.
 
+
+// example.js
+// ----------
 
 var _ = require('underscore')
 var It = require('./')
