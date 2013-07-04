@@ -102,15 +102,15 @@ console.log(_.sortBy(strings, getLength))
 
 
 // equivalent to function(x) { return x.toUpperCase() }
-var toUpperCase = It.send('toUpperCase')
+var upcase = It.send('toUpperCase')
 
 // With this, we can map all these strings to uppercase:
 
-console.log(_.map(strings, toUpperCase))
+console.log(_.map(strings, upcase))
 
 // And with this, case-insensitive sorting is easy:
 
-console.log(_.sortBy(strings, toUpperCase))
+console.log(_.sortBy(strings, upcase))
 
 
 

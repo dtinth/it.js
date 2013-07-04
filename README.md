@@ -120,13 +120,13 @@ Use `.send(...)` to call a method on an object.
 
 ```javascript
 // equivalent to function(x) { return x.toUpperCase() }
-var toUpperCase = It.send('toUpperCase')
+var upcase = It.send('toUpperCase')
 ```
 
 With this, we can map all these strings to uppercase:
 
 ```javascript
-console.log(_.map(strings, toUpperCase))
+console.log(_.map(strings, upcase))
 ```
 
 
@@ -137,7 +137,7 @@ console.log(_.map(strings, toUpperCase))
 And with this, case-insensitive sorting is easy:
 
 ```javascript
-console.log(_.sortBy(strings, toUpperCase))
+console.log(_.sortBy(strings, upcase))
 ```
 
 
