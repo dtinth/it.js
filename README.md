@@ -58,7 +58,7 @@ var getLength = It.get('length')
 
 ```javascript
 // sort the strings by their length
-console.log(_.sortBy(strings, getLength))  // => ['a', 'is', 'this', 'Book']
+console.log(_.sortBy(strings, getLength))
 ```
 
 
@@ -77,7 +77,7 @@ var toUpperCase = It.send('toUpperCase')
 
 ```javascript
 // map all strings to uppercase
-console.log(_.map(strings, toUpperCase)) // => ['THIS', 'IS', 'A', 'BOOK']
+console.log(_.map(strings, toUpperCase))
 ```
 
 
@@ -87,7 +87,7 @@ console.log(_.map(strings, toUpperCase)) // => ['THIS', 'IS', 'A', 'BOOK']
 
 ```javascript
 // therefore, case-insensitive sorting is easy
-console.log(_.sortBy(strings, toUpperCase)) // => ['a', 'Book', 'is', 'this']
+console.log(_.sortBy(strings, toUpperCase))
 ```
 
 
@@ -102,7 +102,7 @@ Of course, all of these are chainable.
 ```javascript
 // equivalent to function(x) { return x.substr(0, 1).toUpperCase() }
 var firstCharacterCapitalized = It.send('substr', 0, 1).send('toUpperCase')
-console.log(_.map(strings, firstCharacterCapitalized)) // => ['T', 'I', 'A', 'B']
+console.log(_.map(strings, firstCharacterCapitalized))
 ```
 
 
