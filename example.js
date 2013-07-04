@@ -1,9 +1,9 @@
 
 
-// It (it.js)
+// It.js
 // ==
 //
-// `It` is a library to make it easier to create accessor/iterator functions,
+// `It.js` is a library to make it easier to create accessor/iterator functions,
 // for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
 // It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/).
 //

@@ -1,5 +1,5 @@
 {
-  "name": "it",
+  "name": "it.js",
   "version": "0.1.0",
   "description": "Object-oriented functional combinators",
   "main": "it.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dtinth/it.git"
+    "url": "git://github.com/dtinth/it.js.git"
   },
   "keywords": [
     "it",
