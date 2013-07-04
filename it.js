@@ -40,8 +40,13 @@ var It = (function() {
         return object
       })
     },
-    send: function(methodName) {
-      var args = slice.call(arguments, 1)
+    del: function(property, value) {
+      return this.compose(function(object) {
+        delete object[property]
+        return object
+      })
+    },
+    post: function(methodName, args) {
       var arg = args[0]
       if (typeof methodName == 'function') {
         var func = methodName
@@ -56,6 +61,19 @@ var It = (function() {
         args.length === 1 ? function(object) { return object[methodName](arg) } :
         function(object) { return object[methodName].apply(object, args) }
       )
+    },
+    send: function(methodName) {
+      var args = slice.call(arguments, 1)
+      return this.post(methodName, args)
+    },
+    fapply: function(args) {
+      return this.compose(function(fn) {
+        return fn.apply(null, args)
+      })
+    },
+    fcall: function() {
+      var args = slice.call(arguments)
+      return this.fapply(args)
     },
     or: function(defaultValue) {
       return this.compose(function(value) {
@@ -79,6 +97,9 @@ var It = (function() {
       })
     }
   }
+
+  It.fn.put = It.fn.set
+  It.fn.invoke = It.fn.send
 
   It.compare = function(accessor) {
     function comparator(a, b) {

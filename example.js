@@ -96,8 +96,8 @@ console.log(_.sortBy(strings, getLength))
 
 
 
-// .send
-// -----
+// .send / .invoke
+// ---------------
 // Use `.send(...)` to call a method on an object.
 
 
@@ -150,8 +150,8 @@ console.log(_.sortBy(addressBook, firstNameLength))
 
 
 
-// .set
-// ----
+// .set / .put
+// -----------
 // `.set(property, value)` sets a property on an object.
 // The result of this operation will be the invoked object,
 // so you can chain more operations (something like `.set('a','b').set('c','d')`).
@@ -160,6 +160,24 @@ console.log(_.sortBy(addressBook, firstNameLength))
 
 _.each(addressBook, It.set('score', 0))
 console.log(addressBook)
+
+// Methods inspired from Q.
+// ---
+//
+// Many methods are inspired from kriskowal's [Q](https://npmjs.org/package/q) library.
+// So this library also offers the same methods as Q's:
+//
+// ```
+// value.foo             It.get('foo')(value)
+// value.foo = x         It.set('foo', x)(value)
+//                       It.put('foo', x)(value)
+// delete value.foo      It.del('foo')(value)
+// value.foo(...args)    It.post('foo', [...args])(value)
+//                       It.send('foo', ...args)(value)
+//                       It.invoke('foo', ...args)(value)
+// value(...args)        It.fapply([...args])
+//                       It.fcall(...args)
+// ```
 
 
 

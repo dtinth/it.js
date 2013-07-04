@@ -114,8 +114,8 @@ console.log(_.sortBy(strings, getLength))
 [ 'a', 'is', 'this', 'Book' ]
 ```
 
-.send
------
+.send / .invoke
+---------------
 Use `.send(...)` to call a method on an object.
 
 ```javascript
@@ -201,8 +201,8 @@ console.log(_.sortBy(addressBook, firstNameLength))
   { first: 'Diblacbo', last: 'Li', phone: '(258) 838-8314' } ]
 ```
 
-.set
-----
+.set / .put
+-----------
 `.set(property, value)` sets a property on an object.
 The result of this operation will be the invoked object,
 so you can chain more operations (something like `.set('a','b').set('c','d')`).
@@ -227,6 +227,24 @@ console.log(addressBook)
     score: 0 },
   { first: 'Betu', last: 'Jol', phone: '(219) 234-9591', score: 0 },
   { first: 'Fuhetu', last: 'Ra', phone: '(631) 437-2332', score: 0 } ]
+```
+
+Methods inspired from Q.
+---
+
+Many methods are inspired from kriskowal's [Q](https://npmjs.org/package/q) library.
+So this library also offers the same methods as Q's:
+
+```
+value.foo             It.get('foo')(value)
+value.foo = x         It.set('foo', x)(value)
+                      It.put('foo', x)(value)
+delete value.foo      It.del('foo')(value)
+value.foo(...args)    It.post('foo', [...args])(value)
+                      It.send('foo', ...args)(value)
+                      It.invoke('foo', ...args)(value)
+value(...args)        It.fapply([...args])
+                      It.fcall(...args)
 ```
 
 .maybe

@@ -5,6 +5,10 @@ var It = require('../it')
 
 describe('It', function() {
 
+  function getArgs() {
+    return [].slice.call(arguments)
+  }
+
   var a = {
         a: 1,
         b: { c: 2 }
@@ -18,9 +22,7 @@ describe('It', function() {
       },
       c = {
         getContext: function() { return this },
-        getArgs: function() {
-          return [].slice.call(arguments)
-        }
+        getArgs: getArgs
       }
 
   it('should act as an identity function', function() {
@@ -38,9 +40,10 @@ describe('It', function() {
     })
   })
 
-  describe('.send', function() {
+  describe('.send / .invoke', function() {
     it('should call a method', function() {
       expect(It.get('a').send('toUpperCase')(b)).to.equal('THIS IS A TEST')
+      expect(It.get('a').invoke('toUpperCase')(b)).to.equal('THIS IS A TEST')
     })
     it('should also accept a function', function() {
       expect(It.get('a').send(''.toUpperCase)(b)).to.equal('THIS IS A TEST')
@@ -61,17 +64,47 @@ describe('It', function() {
     })
   })
 
-  describe('.set', function() {
+  describe('.post', function() {
+    it('should apply arguments to methods', function() {
+      expect(It.post('getArgs', [])(c)).to.deep.equal([])
+      expect(It.post('getArgs', [3])(c)).to.deep.equal([3])
+      expect(It.post('getArgs', [2, 3])(c)).to.deep.equal([2, 3])
+      expect(It.post('getArgs', [1, 2, 3])(c)).to.deep.equal([1, 2, 3])
+    })
+    it('should preserve context', function() {
+      expect(It.post('getContext', [1, 2, 3])(c)).to.equal(c)
+    })
+  })
+
+
+  describe('.set / .put', function() {
     var object
     beforeEach(function() {
       object = { a: 1, b: 2, c: 3 }
     })
     it('should set the property', function() {
       It.set('a', 555)(object)
+      It.put('b', 777)(object)
       expect(object.a).to.equal(555)
+      expect(object.b).to.equal(777)
     })
     it('should return the object', function() {
       expect(It.set('a', 555)(object)).to.equal(object)
+      expect(It.put('b', 777)(object)).to.equal(object)
+    })
+  })
+
+  describe('.del', function() {
+    var object
+    beforeEach(function() {
+      object = { a: 1, b: 2, c: 3 }
+    })
+    it('should set the property', function() {
+      It.del('a')(object)
+      It(expect(object.a).not.to.be.ok)
+    })
+    it('should return the object', function() {
+      expect(It.del('a')(object)).to.equal(object)
     })
   })
 
@@ -129,6 +162,24 @@ describe('It', function() {
       expect(It.self.get('a').call(a)).to.equal(1)
       expect(It.self.get('b').get('c').call(a)).to.equal(2)
       expect(It.self.send('getContext').call(c)).to.equal(c)
+    })
+  })
+
+  describe('.fapply', function() {
+    it('should apply arguments to methods', function() {
+      expect(It.fapply([])(getArgs)).to.deep.equal([])
+      expect(It.fapply([3])(getArgs)).to.deep.equal([3])
+      expect(It.fapply([2, 3])(getArgs)).to.deep.equal([2, 3])
+      expect(It.fapply([1, 2, 3])(getArgs)).to.deep.equal([1, 2, 3])
+    })
+  })
+
+  describe('.fcall', function() {
+    it('should apply arguments to methods', function() {
+      expect(It.fcall()(getArgs)).to.deep.equal([])
+      expect(It.fcall(3)(getArgs)).to.deep.equal([3])
+      expect(It.fcall(2, 3)(getArgs)).to.deep.equal([2, 3])
+      expect(It.fcall(1, 2, 3)(getArgs)).to.deep.equal([1, 2, 3])
     })
   })
 
