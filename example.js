@@ -27,12 +27,13 @@ var strings = ['this', 'is', 'a', 'Book']
 // `It` provides an identity function, just like `_.identity`, but much shorter.
 
 
-// maps an array with itself... pretty useless
+// This maps an array with itself... Pretty useless
 
 console.log(_.map(numbers, It))
 
 
-// gets a sorted copy of an array
+// This gets a sorted copy of an array. We just sort by itself!
+// (This is nice since underscore has only `_.sortBy`, but not `_.sort`)
 
 console.log(_.sortBy(numbers, It))
 console.log(_.sortBy(strings, It))
@@ -43,12 +44,13 @@ console.log(_.sortBy(strings, It))
 // ----
 // `.get` returns the value of a property. Here's where things get interesting...
 
+// Let's create a function that returns the length of a string (or an array, or whatever object that has `.length` property).
 
 // equivalent to function(x) { return x.length }
 var getLength = It.get('length')
 
 
-// sort the strings by their length
+// We can use it to sort the strings by their length.
 
 console.log(_.sortBy(strings, getLength))
 
@@ -62,11 +64,11 @@ console.log(_.sortBy(strings, getLength))
 // equivalent to function(x) { return x.toUpperCase() }
 var toUpperCase = It.send('toUpperCase')
 
-// map all strings to uppercase:
+// With this, we can map all these strings to uppercase:
 
 console.log(_.map(strings, toUpperCase))
 
-// therefore, case-insensitive sorting is easy:
+// And with this, case-insensitive sorting is easy:
 
 console.log(_.sortBy(strings, toUpperCase))
 
@@ -78,6 +80,8 @@ console.log(_.sortBy(strings, toUpperCase))
 
 // equivalent to function(x) { return x.substr(0, 1).toUpperCase() }
 var firstCharacterCapitalized = It.send('substr', 0, 1).send('toUpperCase')
+
+// Get the first character of each string, capitalized.
 
 console.log(_.map(strings, firstCharacterCapitalized))
 
@@ -178,7 +182,7 @@ _.each(people, It.send('greet'))
 
 // It.self
 // -------
-// You can use `It.self` instead of `It` to use make a function that
+// You can use `It.self` instead of `It` to create a function that
 // uses the value of `this` instead of the value of passed argument.
 //
 // You can use it to quickly make an accessor function

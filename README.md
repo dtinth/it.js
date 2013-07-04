@@ -26,7 +26,7 @@ It
 --
 `It` provides an identity function, just like `_.identity`, but much shorter.
 
-maps an array with itself... pretty useless
+This maps an array with itself... Pretty useless
 
 ```javascript
 console.log(_.map(numbers, It))
@@ -37,7 +37,8 @@ console.log(_.map(numbers, It))
 [ 3, 1, 4, 1, 5 ]
 ```
 
-gets a sorted copy of an array
+This gets a sorted copy of an array. We just sort by itself!
+(This is nice since underscore has only `_.sortBy`, but not `_.sort`)
 
 ```javascript
 console.log(_.sortBy(numbers, It))
@@ -54,12 +55,14 @@ console.log(_.sortBy(strings, It))
 ----
 `.get` returns the value of a property. Here's where things get interesting...
 
+Let's create a function that returns the length of a string (or an array, or whatever object that has `.length` property).
+
 ```javascript
 // equivalent to function(x) { return x.length }
 var getLength = It.get('length')
 ```
 
-sort the strings by their length
+We can use it to sort the strings by their length.
 
 ```javascript
 console.log(_.sortBy(strings, getLength))
@@ -79,7 +82,7 @@ Use `.send(...)` to call a method on an object.
 var toUpperCase = It.send('toUpperCase')
 ```
 
-map all strings to uppercase:
+With this, we can map all these strings to uppercase:
 
 ```javascript
 console.log(_.map(strings, toUpperCase))
@@ -90,7 +93,7 @@ console.log(_.map(strings, toUpperCase))
 [ 'THIS', 'IS', 'A', 'BOOK' ]
 ```
 
-therefore, case-insensitive sorting is easy:
+And with this, case-insensitive sorting is easy:
 
 ```javascript
 console.log(_.sortBy(strings, toUpperCase))
@@ -109,6 +112,8 @@ Of course, all of these are chainable.
 // equivalent to function(x) { return x.substr(0, 1).toUpperCase() }
 var firstCharacterCapitalized = It.send('substr', 0, 1).send('toUpperCase')
 ```
+
+Get the first character of each string, capitalized.
 
 ```javascript
 console.log(_.map(strings, firstCharacterCapitalized))
@@ -248,10 +253,6 @@ Person.prototype.greet = function() {
 }
 ```
 
-
-```
-```
-
 We can map everyone in the address book into a new Person instance!
 
 ```javascript
@@ -260,14 +261,18 @@ var people = _.map(addressBook, It.instantiate(Person))
 _.each(people, It.send('greet'))
 ```
 
+
+```
 Hello! I am "Sifwa Duhav"
 Hello! I am "Moc undefined"
 Hello! I am "Diblacbo Li"
 Hello! I am "Betu Jol"
 Hello! I am "Fuhetu Ra"
+```
+
 It.self
 -------
-You can use `It.self` instead of `It` to use make a function that
+You can use `It.self` instead of `It` to create a function that
 uses the value of `this` instead of the value of passed argument.
 
 You can use it to quickly make an accessor function
@@ -308,11 +313,15 @@ Person.prototype.getName = function() {
 _.each(people, It.send('greet'))
 ```
 
+
+```
 Hello! I am "Sifwa D."
 Hello! I am "Moc"
 Hello! I am "Diblacbo L."
 Hello! I am "Betu J."
 Hello! I am "Fuhetu R."
+```
+
 .compose
 --------
 You can use `.derive` to compose your own functionality.

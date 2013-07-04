@@ -17,7 +17,7 @@ function comment(block) {
 }
 
 function code(block) {
-  var prints = block.lines.join('\n').match(/console\.log/)
+  var prints = block.source.match(/console\.log|send\('greet/) && !block.source.match(/function Person/) // quick and dirty!!
   return 'console.log(' + JSON.stringify(['```javascript'].concat(block.lines).concat(['```']).join('\n') + '\n') + ');' +
     (prints ? 'console.log("\\n```");' : '') +
     block.lines.join('\n') + '\n' +
@@ -25,6 +25,7 @@ function code(block) {
 }
 
 function Block(source) {
+  this.source = source
   this.lines = source.split(/\n/)
   this.type = _.every(this.lines, isComment) ? comment : code
 }
