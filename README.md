@@ -9,6 +9,47 @@ This library is inspired by the article
 [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
 by Reginald Braithwaite, but I want it to look more fluent and chainable.
 
+tldr
+----
+
+In short, this library allows you to write this:
+
+```javascript
+It.send('toLowerCase')
+```
+
+instead of this:
+
+```javascript
+function(name) { return name.toLowerCase() }
+```
+
+
+And this:
+
+```javascript
+It.instantiate(Status)
+```
+
+instead of this:
+
+```javascript
+function(json) { return new Status(json) }
+```
+
+
+They are chainable, so you can also write things like this:
+
+```javascript
+It.get('first').get('length')
+```
+
+instead of this:
+
+```javascript
+function(person) { return person.first.length }
+```
+
 example.js
 ----------
 
@@ -377,6 +418,25 @@ console.log(getBA(test))
 { a: 2 }
 1
 2
+```
+
+Let's bring back that array of `Person` instances, and the `firstNameLength` function we created earlier before.
+
+The `firstNameLength` function works with JSON data, not `Person` instances.
+Luckily, the Person class stores the original JSON data in the `.info` property.
+So we can still sort these people by their first name length.
+
+```javascript
+_.each(_.sortBy(people, It.get('info').compose(firstNameLength)), It.send('greet'))
+```
+
+
+```
+Hello! I am "Moc"
+Hello! I am "Betu J."
+Hello! I am "Sifwa D."
+Hello! I am "Fuhetu R."
+Hello! I am "Diblacbo L."
 ```
 
 .tap
