@@ -3,7 +3,8 @@ it.js
 
 `it.js` is a library to make it easier to create accessor/iterator functions,
 for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
-It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/).
+It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/)
+(but it does not depend on, and can be used without underscore).
 
 This library is inspired by the article
 [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
@@ -49,6 +50,27 @@ instead of this:
 ```javascript
 function(person) { return person.first.length }
 ```
+
+Quick Reference
+---------------
+~~~javascript
+It                       -> return it
+It.self                  -> return this
+.get('foo')              -> return it.foo
+.send('foo', ...args)    -> return it.foo(...args)
+.invoke('foo', ...args)  -> return it.foo(...args)
+.fcall(...args)          -> return it(...args)
+.set('foo', 'bar')       -> it.foo = 'bar'; return it
+.put('foo', 'bar')       -> it.foo = 'bar'; return it
+.del('foo')              -> delete it.foo; return it
+.maybe(fun)              -> return it && fun(it)
+.or(defaultValue)        -> return it || defaultValue
+.instantiate(Klass)      -> return new Klass(it)
+.tap(fun)                -> fun(it); return it
+.post('foo', [...args])  -> return it.foo(...args)
+.fapply([...args])       -> return it(...args)
+.not(fun)                -> return !fun(it)
+~~~
 
 example.js
 ----------
@@ -432,6 +454,8 @@ console.log(_.map(vectors, It.get('y').compose(square)))
 [ 25, 1, 9 ]
 ```
 
+---
+
 You can also use `.compose` to chain functions together.
 
 ```javascript
@@ -456,6 +480,8 @@ console.log(getBA(test))
 2
 ```
 
+---
+
 Let's bring back that array of `Person` instances, and the `firstNameLength` function we created earlier before.
 
 The `firstNameLength` function works with JSON data, not `Person` instances.
@@ -473,6 +499,46 @@ Hello! I am "Betu J."
 Hello! I am "Sifwa D."
 Hello! I am "Fuhetu R."
 Hello! I am "Diblacbo L."
+```
+
+---
+
+Here we have a list of things, initially sorted alphabetically...
+
+```javascript
+var things = [
+  { name: 'Apple',          type: 'fruit' },
+  { name: 'CoffeeScript',   type: 'language' },
+  { name: 'Cat',            type: 'animal' },
+  { name: 'Dog',            type: 'animal' },
+  { name: 'Guava',          type: 'fruit' },
+  { name: 'JavaScript',     type: 'language' },
+  { name: 'Mountain Lion',  type: 'animal' },
+  { name: 'Pineapple',      type: 'fruit' },
+  { name: 'Ruby',           type: 'language' } ]
+```
+
+Let's say we want to order them. We want languages first, then we want animals, and finally we want fruits.
+In that order.
+
+Thanks to `.compose` and `_.partial`, this is easy!
+
+```javascript
+var where = _.partial(_.indexOf, ['language', 'animal', 'fruit'])
+console.log(_.sortBy(things, It.get('type').compose(where)))
+```
+
+
+```
+[ { name: 'CoffeeScript', type: 'language' },
+  { name: 'JavaScript', type: 'language' },
+  { name: 'Ruby', type: 'language' },
+  { name: 'Cat', type: 'animal' },
+  { name: 'Dog', type: 'animal' },
+  { name: 'Mountain Lion', type: 'animal' },
+  { name: 'Apple', type: 'fruit' },
+  { name: 'Guava', type: 'fruit' },
+  { name: 'Pineapple', type: 'fruit' } ]
 ```
 
 .tap

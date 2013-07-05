@@ -5,7 +5,8 @@
 //
 // `it.js` is a library to make it easier to create accessor/iterator functions,
 // for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
-// It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/).
+// It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/)
+// (but it does not depend on, and can be used without underscore).
 //
 // This library is inspired by the article
 // [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
@@ -51,6 +52,30 @@
 // ```javascript
 // function(person) { return person.first.length }
 // ```
+
+
+
+// Quick Reference
+// ---------------
+// ~~~javascript
+// It                       -> return it
+// It.self                  -> return this
+// .get('foo')              -> return it.foo
+// .send('foo', ...args)    -> return it.foo(...args)
+// .invoke('foo', ...args)  -> return it.foo(...args)
+// .fcall(...args)          -> return it(...args)
+// .set('foo', 'bar')       -> it.foo = 'bar'; return it
+// .put('foo', 'bar')       -> it.foo = 'bar'; return it
+// .del('foo')              -> delete it.foo; return it
+// .maybe(fun)              -> return it && fun(it)
+// .or(defaultValue)        -> return it || defaultValue
+// .instantiate(Klass)      -> return new Klass(it)
+// .tap(fun)                -> fun(it); return it
+// .post('foo', [...args])  -> return it.foo(...args)
+// .fapply([...args])       -> return it(...args)
+// .not(fun)                -> return !fun(it)
+// ~~~
+
 
 // example.js
 // ----------
@@ -307,6 +332,8 @@ function square(x) {
 console.log(_.map(vectors, It.get('x').compose(square)))
 console.log(_.map(vectors, It.get('y').compose(square)))
 
+// ---
+//
 // You can also use `.compose` to chain functions together.
 
 var test = { a: { b: 1 }, b: { a: 2 } }
@@ -321,6 +348,8 @@ console.log(getAB(test))
 console.log(getBA(test))
 
 
+// ---
+//
 // Let's bring back that array of `Person` instances, and the `firstNameLength` function we created earlier before.
 // 
 // The `firstNameLength` function works with JSON data, not `Person` instances.
@@ -328,6 +357,31 @@ console.log(getBA(test))
 // So we can still sort these people by their first name length.
 
 _.each(_.sortBy(people, It.get('info').compose(firstNameLength)), It.send('greet'))
+
+
+
+// ---
+//
+// Here we have a list of things, initially sorted alphabetically...
+
+var things = [
+  { name: 'Apple',          type: 'fruit' },
+  { name: 'CoffeeScript',   type: 'language' },
+  { name: 'Cat',            type: 'animal' },
+  { name: 'Dog',            type: 'animal' },
+  { name: 'Guava',          type: 'fruit' },
+  { name: 'JavaScript',     type: 'language' },
+  { name: 'Mountain Lion',  type: 'animal' },
+  { name: 'Pineapple',      type: 'fruit' },
+  { name: 'Ruby',           type: 'language' } ]
+
+// Let's say we want to order them. We want languages first, then we want animals, and finally we want fruits.
+// In that order.
+//
+// Thanks to `.compose` and `_.partial`, this is easy!
+
+var where = _.partial(_.indexOf, ['language', 'animal', 'fruit'])
+console.log(_.sortBy(things, It.get('type').compose(where)))
 
 
 // .tap
