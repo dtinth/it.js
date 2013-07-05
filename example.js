@@ -13,6 +13,7 @@
 // * [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md) by Reginald Braithwaite
 // * [Q](https://github.com/kriskowal/q) by kriskowal
 // * [underscore.js](http://underscorejs.org/) by DocumentCloud
+// * [LiveScript](http://livescript.net/) for stuff like (+), (+ 1), (.test()), (.foo)
 
 
 // tldr
