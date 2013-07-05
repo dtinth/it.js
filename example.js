@@ -95,6 +95,12 @@ var strings = ['this', 'is', 'a', 'Book']
 // It
 // --
 // `It` provides an identity function, just like `_.identity`, but much shorter.
+//
+// What you pass to it, you get it back!
+
+console.log(It(123))
+console.log(It('hello!'))
+
 
 
 // This maps an array with itself... Pretty useless
@@ -120,6 +126,12 @@ console.log(_.sortBy(strings, It))
 var getLength = It.get('length')
 
 
+// Now, `getLength` is a function that returns the length property.
+
+console.log(getLength('this is a string'))
+console.log(getLength(strings))
+
+
 // We can use it to sort the strings by their length.
 
 console.log(_.sortBy(strings, getLength))
@@ -134,9 +146,16 @@ console.log(_.sortBy(strings, getLength))
 // equivalent to function(x) { return x.toUpperCase() }
 var upcase = It.send('toUpperCase')
 
+
+// Now, `upcase` is a function that takes something and calls the `toUpperCase()` method on it.
+
+console.log(upcase('this is a string'))
+
+
 // With this, we can map all these strings to uppercase:
 
 console.log(_.map(strings, upcase))
+
 
 // And with this, case-insensitive sorting is easy:
 
@@ -144,12 +163,17 @@ console.log(_.sortBy(strings, upcase))
 
 
 
+
 // .splat
 // ------
 // Use `.splat(function)` to map an array over that function
 
+// equivalent to function(x) { return Array.prototype.map.call(x, upcase) }
 var upcaseAll = It.splat(upcase)
+
 console.log(upcaseAll(strings))
+
+
 
 
 // Chaining
@@ -309,6 +333,7 @@ _.each(people, It.send('greet'))
 // .compose
 // --------
 // You can use `.compose` to compose your own functionality.
+// In fact, most of the functionality are in this library is built on top of `.compose`.
 //
 // Here we have these vectors...
 
@@ -396,8 +421,25 @@ console.log(_.map(people, It.tap(It.send('greet')).send('getFirstName')))
 
 
 
+// Performance
+// -----------
+//
+// While these generated functions are fast, creating them is quite expensive.
+//
+// For best performance, you can generate the functions you want to use ahead of time,
+// and just use them, instead of generating these functions on the fly.
+//
+// A very simple benchmark is included in `benchmark.js` to illustrate the point.
+
+
+
 // License
 // -------
 // MIT Licensed
+
+
+
+
+
 
 
