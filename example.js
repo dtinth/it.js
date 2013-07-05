@@ -57,6 +57,25 @@
 // ```
 
 
+// Installation
+// ------------
+//
+// npm:
+//
+//     npm install it.js
+// 
+// Node:
+//
+//     var It = require('it.js')
+//
+// Bower:
+//
+//     bower install dtinth/it.js
+//
+// Browser:
+//
+//     <script src="path/to/it.js"></script>
+
 
 // Quick Reference
 // ---------------
@@ -424,7 +443,8 @@ console.log(_.map(people, It.tap(It.send('greet')).send('getFirstName')))
 // Performance
 // -----------
 //
-// While these generated functions are fast, creating them is quite expensive.
+// While these generated functions are fast (only a little function call overhead),
+// the process of creating these functions is expensive.
 //
 // For best performance, you can generate the functions you want to use ahead of time,
 // and just use them, instead of generating these functions on the fly.
