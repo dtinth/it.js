@@ -3,6 +3,11 @@
 var expect = require('chai').expect
 var It = require('../it')
 
+
+function dbl(x) {
+  return x + x
+}
+
 describe('It', function() {
 
   function getArgs() {
@@ -21,10 +26,14 @@ describe('It', function() {
         }
       },
       c = {
+        a: null,
         t: true,
         f: false,
         getContext: function() { return this },
         getArgs: getArgs
+      },
+      d = {
+        allTheStuff: [a, b, c]
       }
 
   it('should act as an identity function', function() {
@@ -205,6 +214,19 @@ describe('It', function() {
       expect(It.self.not(It.get('f')).call(c)).to.equal(true)
       expect(It.self.get('t').not().call(c)).to.equal(false)
       expect(It.self.get('f').not().call(c)).to.equal(true)
+    })
+  })
+
+  describe('.splat', function() {
+    it('should map on a function', function() {
+      expect(It.splat(dbl)([1,2,3,4])).to.deep.equal([2,4,6,8])
+      expect(It.get('x').splat(dbl)({x: [1,2,3,4]})).to.deep.equal([2,4,6,8])
+    })
+  })
+
+  describe('.pluck', function() {
+    it('should splat with get', function() {
+      expect(It.get('allTheStuff').pluck('a')(d)).to.deep.equal([1, 'this is a test', null])
     })
   })
 

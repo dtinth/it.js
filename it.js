@@ -101,6 +101,14 @@ var It = (function() {
         func(value)
         return value
       })
+    },
+    splat: function(func) {
+      return this.compose(function(array) {
+        return Array.prototype.map.call(array, func)
+      })
+    },
+    pluck: function(property) {
+      return this.splat(It.get(property))
     }
   }
 
