@@ -130,6 +130,12 @@ describe('It', function() {
       expect(It.maybe(It.get('a'))({ a: 1 })).to.equal(1)
       expect(It.get('z').maybe(It.get('length'))(b)).to.equal(4)
     })
+    it('should accept string instead of function', function() {
+      var bc = It.maybe('b').maybe('c')
+      expect(bc(a)).to.equal(2)
+      expect(bc(b)).to.equal(undefined)
+      expect(bc(c)).to.equal(undefined)
+    })
   })
 
   describe('.or', function() {
@@ -209,6 +215,10 @@ describe('It', function() {
       expect(It.get('t').not()(c)).to.equal(false)
       expect(It.get('f').not()(c)).to.equal(true)
     })
+    it('should accept strings', function() {
+      expect(It.not('t')(c)).to.equal(false)
+      expect(It.not('f')(c)).to.equal(true)
+    })
     it('should work with .self (that is, preserves context)', function() {
       expect(It.self.not(It.get('t')).call(c)).to.equal(false)
       expect(It.self.not(It.get('f')).call(c)).to.equal(true)
@@ -222,6 +232,9 @@ describe('It', function() {
       expect(It.splat(dbl)([1,2,3,4])).to.deep.equal([2,4,6,8])
       expect(It.get('x').splat(dbl)({x: [1,2,3,4]})).to.deep.equal([2,4,6,8])
     })
+    it('should accept string instead of function', function() {
+      expect(It.get('allTheStuff').splat('a')(d)).to.deep.equal([1, 'this is a test', null])
+    })
   })
 
   describe('.pluck', function() {
@@ -229,6 +242,71 @@ describe('It', function() {
       expect(It.get('allTheStuff').pluck('a')(d)).to.deep.equal([1, 'this is a test', null])
     })
   })
+
+  describe("['===']", function() {
+    it('should return true only when it\'s strictly equal', function() {
+      var one = It['==='](1)
+      expect(one(1)).to.equal(true)
+      expect(one('1')).to.equal(false)
+    })
+  })
+  describe("['==']", function() {
+    it('should return true only when it\'s equal', function() {
+      var one = It['=='](1)
+      expect(one(1)).to.equal(true)
+      expect(one('1')).to.equal(true)
+      expect(one('2')).to.equal(false)
+    })
+  })
+
+  // just getting tired of typing things
+  var F = false, T = true
+
+  describe('operators', function() {
+
+    function describeOperator(operator, result) {
+      describe(operator, function() {
+        it('should compute value of a ' + operator + ' b', function() {
+          /*jshint evil:true*/
+          expect(It.op[operator](1,2)).to.equal(eval('1' + operator + '2'))
+        })
+      })
+      describe("['" + operator + "']", function() {
+        it('should return value of it ' + operator + ' passed value', function() {
+          expect(It.splat(It[operator](2))([1,2,3,4])).to.deep.equal(result)
+        })
+      })
+    }
+
+    describeOperator('>', [ F, F, T, T ])
+    describeOperator('>=', [ F, T, T, T ])
+    describeOperator('<', [ T, F, F, F ])
+    describeOperator('<=', [ T, T, F, F ])
+    describeOperator('!=', [ T, F, T, T ])
+    describeOperator('!==', [ T, F, T, T ])
+    describeOperator('+', [ 3, 4, 5, 6 ])
+    describeOperator('-', [ -1, 0, 1, 2 ])
+    describeOperator('*', [ 2, 4, 6, 8 ])
+    describeOperator('/', [ 0.5, 1, 1.5, 2 ])
+
+  })
+  
+  describe('.reduce', function() {
+    it('should do a reduce on an array', function() {
+      var sum = It.reduce(It.op['+'])
+      expect(sum([1,2,3,4])).to.equal(10)
+    })
+  })
+  describe('.filter', function() {
+    it('should do a filter on an array', function() {
+      var even = function(x) { return x % 2 === 0 }
+      var selectEven = It.select(even)
+      expect(selectEven([1,2,3,4])).to.deep.equal([2,4])
+      selectEven = It.filter(even)
+      expect(selectEven([1,2,3,4])).to.deep.equal([2,4])
+    })
+  })
+
 
 })
 
