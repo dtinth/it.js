@@ -75,24 +75,34 @@ Browser:
 Quick Reference
 ---------------
 ~~~javascript
-It                       -> return it
-It.self                  -> return this
-.get('foo')              -> return it.foo
-.send('foo', ...args)    -> return it.foo(...args)
-.invoke('foo', ...args)  -> return it.foo(...args)
-.fcall(...args)          -> return it(...args)
-.set('foo', 'bar')       -> it.foo = 'bar'; return it
-.put('foo', 'bar')       -> it.foo = 'bar'; return it
-.del('foo')              -> delete it.foo; return it
-.maybe(fun)              -> return it && fun(it)
-.or(defaultValue)        -> return it || defaultValue
-.instantiate(Klass)      -> return new Klass(it)
-.tap(fun)                -> fun(it); return it
-.post('foo', [...args])  -> return it.foo(...args)
-.fapply([...args])       -> return it(...args)
-.not(fun)                -> return !fun(it)
-.splat(fun)              -> return Array.prototype.map.call(it, fun)
-.pluck('foo')            -> return Array.prototype.map.call(it, function(o) { return o.foo })
+It                             -> return it
+It.self                        -> return this
+
+.get('foo')                    -> return it.foo
+.send/.invoke('foo', ...args)  -> return it.foo(...args)
+.fcall(...args)                -> return it(...args)
+.set/.put('foo', 'bar')        -> it.foo = 'bar'; return it
+.del('foo')                    -> delete it.foo; return it
+
+.or(defaultValue)              -> return it || defaultValue
+.instantiate(Klass)            -> return new Klass(it)
+.tap(fun)                      -> fun(it); return it
+.post('foo', [...args])        -> return it.foo(...args)
+.fapply([...args])             -> return it(...args)
+
+.maybe(fun)                    -> return it && fun(it)
+.maybe('foo')                  -> return it && it.foo
+.not(fun)                      -> return !fun(it)
+.not('foo')                    -> return !it.foo
+
+.splat(fun)                    -> return Array.prototype.map.call(it, fun)
+.splat/.pluck('foo')           -> return Array.prototype.map.call(it, It.get('foo'))
+.select/.filter(fun)           -> return Array.prototype.filter.call(it, fun)
+.select/.filter('foo')         -> return Array.prototype.filter.call(it, It.get('foo'))
+.reduce('foo')                 -> return Array.prototype.reduce.call(it, It.get('foo'))
+
+['op'](value)                  -> return it op value
+     (where op === == !== != > >= < <= + - * /)
 ~~~
 
 example.js
@@ -227,9 +237,9 @@ console.log(_.sortBy(strings, upcase))
 [ 'a', 'Book', 'is', 'this' ]
 ```
 
-.splat
+.splat / .pluck
 ------
-Use `.splat(function)` to map an array over that function
+Use `.splat(function)` to map an array over that function.
 
 ```javascript
 // equivalent to function(x) { return Array.prototype.map.call(x, upcase) }
@@ -244,6 +254,8 @@ console.log(upcaseAll(strings))
 ```
 [ 'THIS', 'IS', 'A', 'BOOK' ]
 ```
+
+Note that `.pluck('foo')` is equivalent to `.splat(It.get('foo'))`
 
 Chaining
 --------
@@ -338,13 +350,15 @@ For example, one of the contact in the address book above does not have a last n
 Let's find out who.
 
 ```javascript
-// these two are equivalent to function(x) { return !x.last }
+// these three are equivalent to function(x) { return !x.last }
 console.log(_.select(addressBook, It.not(It.get('last'))))
 console.log(_.select(addressBook, It.get('last').not()))
+console.log(_.select(addressBook, It.not('last')))
 ```
 
 
 ```
+[ { first: 'Moc', phone: '(898) 983-5755', score: 0 } ]
 [ { first: 'Moc', phone: '(898) 983-5755', score: 0 } ]
 [ { first: 'Moc', phone: '(898) 983-5755', score: 0 } ]
 ```
@@ -378,6 +392,8 @@ console.log(_.filter(_.map(addressBook, lastNameLowered), It))
 ```
 [ 'duhav', 'li', 'jol', 'ra' ]
 ```
+
+Note that `.maybe('foo')` is a shorthand for `.maybe(It.get('foo'))`.
 
 .or
 ---
@@ -600,6 +616,64 @@ console.log(_.sortBy(things, It.get('type').compose(where)))
   { name: 'Pineapple', type: 'fruit' } ]
 ```
 
+['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/'], It.op
+------------------------------------------------------------------------------------------
+These functions can also be used to check against the given value...
+
+There are so many different conventions on how to name each of these functions...
+Should I use equal, eq, eql, equals, strictEqual, or, strictlyEquals?
+
+I think of it, and think these names will only add confusion.
+Why not just use operators names!
+
+We also have `It.op` that holds the binary versions of these functions.
+
+```javascript
+var addOne = It['+'](1)
+var add = It.op['+']
+console.log(addOne(41))
+console.log(add(41, 1))
+```
+
+
+```
+42
+42
+```
+
+.select / .filter
+-----------------
+Just like `.splat(fun)` that runs [].map(fun) over passed array,
+`.select(fun)` runs [].filter(fn) over passed array.
+
+---
+
+From the above list of things, let's get all the languages.
+
+```javascript
+var getLanguageNames = It.select(It.get('type')['==']('language')).pluck('name')
+console.log(getLanguageNames(things))
+```
+
+
+```
+[ 'CoffeeScript', 'JavaScript', 'Ruby' ]
+```
+
+.reduce
+-------
+Yeah. Just like .splat and .select...
+
+```javascript
+var sum = It.reduce(It.op['+'])
+console.log(sum([1,2,3,4,5]))
+```
+
+
+```
+15
+```
+
 .tap
 ----
 `.tap` invokes the passed function with the current value,
@@ -647,6 +721,7 @@ the process of creating these functions is expensive.
 
 For best performance, you can generate the functions you want to use ahead of time,
 and just use them, instead of generating these functions on the fly.
+As a simple guideline, don't generate these functions inside a loop.
 
 A very simple benchmark is included in `benchmark.js` to illustrate the point.
 
