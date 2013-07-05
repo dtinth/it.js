@@ -142,7 +142,7 @@ console.log(It('hello!'))
 hello!
 ```
 
-This maps an array with itself... Pretty useless
+This code maps an array with itself... Pretty useless
 
 ```javascript
 console.log(_.map(numbers, It))
@@ -153,7 +153,7 @@ console.log(_.map(numbers, It))
 [ 3, 1, 4, 1, 5 ]
 ```
 
-This gets a sorted copy of an array. We just sort by itself!
+This code gets a sorted copy of an array. We just sort by itself!
 (This is nice since underscore has only `_.sortBy`, but not `_.sort`)
 
 ```javascript
@@ -171,7 +171,7 @@ console.log(_.sortBy(strings, It))
 ----
 `.get` returns the value of a property. Here's where things get interesting...
 
-Let's create a function that returns the length of a string (or an array, or whatever object that has `.length` property).
+Let's create a function that returns the length of a string (or an array, or whatever that has `.length` property).
 
 ```javascript
 // equivalent to function(x) { return x.length }
@@ -625,16 +625,15 @@ console.log(_.sortBy(things, It.get('type').compose(where)))
 
 ['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/']
 ------------------------------------------------------------------------------------------
-These functions can also be used to check against the given value...
+These functions can be used to check against the given value...
 
-There are so many different conventions on how to name each of these functions...
-Should I use equal, eq, eql, equals, strictEqual, or, strictlyEquals?
+There are so many different conventions on how to name each of these functions.
 
-I think of it, and think these names will only add confusion.
-Why not just use operators names!
+* Should I use equal, eq, eql, equals, strictEqual, or strictlyEquals for `===`? How about `==`?
+* add or plus? gt, above, greaterThan, more, moreThan?
 
-Additionally, if you pass 2 parameters to these functions, it will calculate the
-answer right away.
+After I think about them, I think that these names will only add more confusion.
+So I just use the original operator name, which are symbols.
 
 ```javascript
 var addOne = It['+'](1)
@@ -646,6 +645,9 @@ console.log(addOne(41))
 42
 ```
 
+These "operator" functions are a little bit special.
+If you pass 2 parameters to these functions, it will calculate the answer right away.
+
 ```javascript
 console.log(It['+'](41, 1))
 ```
@@ -653,6 +655,17 @@ console.log(It['+'](41, 1))
 
 ```
 42
+```
+
+...so that we can put them into `_.reduce`:
+
+```javascript
+console.log(_.reduce([1,2,3,4,5], It['+']))
+```
+
+
+```
+15
 ```
 
 .select / .filter
