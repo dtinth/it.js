@@ -93,6 +93,19 @@ It
 --
 `It` provides an identity function, just like `_.identity`, but much shorter.
 
+What you pass to it, you get it back!
+
+```javascript
+console.log(It(123))
+console.log(It('hello!'))
+```
+
+
+```
+123
+hello!
+```
+
 This maps an array with itself... Pretty useless
 
 ```javascript
@@ -129,6 +142,19 @@ Let's create a function that returns the length of a string (or an array, or wha
 var getLength = It.get('length')
 ```
 
+Now, `getLength` is a function that returns the length property.
+
+```javascript
+console.log(getLength('this is a string'))
+console.log(getLength(strings))
+```
+
+
+```
+16
+4
+```
+
 We can use it to sort the strings by their length.
 
 ```javascript
@@ -147,6 +173,17 @@ Use `.send(...)` to call a method on an object.
 ```javascript
 // equivalent to function(x) { return x.toUpperCase() }
 var upcase = It.send('toUpperCase')
+```
+
+Now, `upcase` is a function that takes something and calls the `toUpperCase()` method on it.
+
+```javascript
+console.log(upcase('this is a string'))
+```
+
+
+```
+THIS IS A STRING
 ```
 
 With this, we can map all these strings to uppercase:
@@ -176,7 +213,11 @@ console.log(_.sortBy(strings, upcase))
 Use `.splat(function)` to map an array over that function
 
 ```javascript
+// equivalent to function(x) { return Array.prototype.map.call(x, upcase) }
 var upcaseAll = It.splat(upcase)
+```
+
+```javascript
 console.log(upcaseAll(strings))
 ```
 
@@ -424,6 +465,7 @@ Hello! I am "Fuhetu R."
 .compose
 --------
 You can use `.compose` to compose your own functionality.
+In fact, most of the functionality are in this library is built on top of `.compose`.
 
 Here we have these vectors...
 
@@ -577,6 +619,16 @@ Hello! I am "Betu J."
 Hello! I am "Fuhetu R."
 [ 'Sifwa', 'Moc', 'Diblacbo', 'Betu', 'Fuhetu' ]
 ```
+
+Performance
+-----------
+
+While these generated functions are fast, creating them is quite expensive.
+
+For best performance, you can generate the functions you want to use ahead of time,
+and just use them, instead of generating these functions on the fly.
+
+A very simple benchmark is included in `benchmark.js` to illustrate the point.
 
 License
 -------
