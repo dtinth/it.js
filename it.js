@@ -188,11 +188,17 @@ var It = (function() {
 
   // let's have some operators
   It.op = {}
+  function binary(op, fun) {
+    return function binaryOperatorFunction(a, b) {
+      if (arguments.length > 1) return fun(a, b)
+      return op.call(this, a)
+    }
+  }
   function operator(op) {
     /* jshint evil:true */ // no! eval is not always evil.
     var fun = new Function('a', 'b', 'return a ' + op + ' b')
     var object = {}
-    object[op] = operation(fun)
+    object[op] = binary(operation(fun), fun)
     It.op[op] = fun
     It.extend(object)
   }

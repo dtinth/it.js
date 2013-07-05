@@ -112,6 +112,7 @@
 // .reduce('foo')                 -> return Array.prototype.reduce.call(it, It.get('foo'))
 //
 // ['op'](value)                  -> return it op value
+// ['op'](a, b)                    = a op b
 //      (where op === == !== != > >= < <= + - * /)
 // ~~~
 
@@ -442,7 +443,7 @@ console.log(_.sortBy(things, It.get('type').compose(where)))
 
 
 
-// ['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/'], It.op
+// ['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/']
 // ------------------------------------------------------------------------------------------
 // These functions can also be used to check against the given value...
 //
@@ -452,12 +453,13 @@ console.log(_.sortBy(things, It.get('type').compose(where)))
 // I think of it, and think these names will only add confusion.
 // Why not just use operators names!
 //
-// We also have `It.op` that holds the binary versions of these functions.
+// Additionally, if you pass 2 parameters to these functions, it will calculate the
+// answer right away.
 
 var addOne = It['+'](1)
-var add = It.op['+']
 console.log(addOne(41))
-console.log(add(41, 1))
+
+console.log(It['+'](41, 1))
 
 
 // .select / .filter
@@ -477,7 +479,7 @@ console.log(getLanguageNames(things))
 // -------
 // Yeah. Just like .splat and .select...
 
-var sum = It.reduce(It.op['+'])
+var sum = It.reduce(It['+'])
 console.log(sum([1,2,3,4,5]))
 
 

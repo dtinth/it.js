@@ -268,10 +268,8 @@ describe('It', function() {
       describe(operator, function() {
         it('should compute value of a ' + operator + ' b', function() {
           /*jshint evil:true*/
-          expect(It.op[operator](1,2)).to.equal(eval('1' + operator + '2'))
+          expect(It[operator](1,2)).to.equal(eval('1' + operator + '2'))
         })
-      })
-      describe("['" + operator + "']", function() {
         it('should return value of it ' + operator + ' passed value', function() {
           expect(It.splat(It[operator](2))([1,2,3,4])).to.deep.equal(result)
         })
