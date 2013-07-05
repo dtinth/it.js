@@ -173,11 +173,11 @@ Here we have a list of people. (name generation thanks to chance.js)
 
 ```javascript
 var addressBook = [
-  { first: 'Sifwa', last: 'Duhav', phone: '(416) 984-4454' },
-  { first: 'Moc', phone: '(898) 983-5755' },
-  { first: 'Diblacbo', last: 'Li', phone: '(258) 838-8314' },
-  { first: 'Betu', last: 'Jol', phone: '(219) 234-9591' },
-  { first: 'Fuhetu', last: 'Ra', phone: '(631) 437-2332' }
+  { first: 'Sifwa',    last: 'Duhav', phone: '(416) 984-4454' },
+  { first: 'Moc',                     phone: '(898) 983-5755' },
+  { first: 'Diblacbo', last: 'Li',    phone: '(258) 838-8314' },
+  { first: 'Betu',     last: 'Jol',   phone: '(219) 234-9591' },
+  { first: 'Fuhetu',   last: 'Ra',    phone: '(631) 437-2332' }
 ]
 ```
 
@@ -247,14 +247,32 @@ value(...args)        It.fapply([...args])
                       It.fcall(...args)
 ```
 
+.not
+----
+`.not(func)` invokes a passed function with current value, and returns the logical NOT of the result.
+If you don't put in any function, `.not()` is equivalent to `.not(It)`.
+
+For example, one of the contact in the address book above does not have a last name.
+Let's find out who.
+
+```javascript
+// these two are equivalent to function(x) { return !x.last }
+console.log(_.select(addressBook, It.not(It.get('last'))))
+console.log(_.select(addressBook, It.get('last').not()))
+```
+
+
+```
+[ { first: 'Moc', phone: '(898) 983-5755', score: 0 } ]
+[ { first: 'Moc', phone: '(898) 983-5755', score: 0 } ]
+```
+
 .maybe
 ------
 `.maybe(func)` invokes a passed function with current value only if the current value is truthy.
 
-In the address book above, Moc doesn't have a last name.
-Without `.maybe()`, we will end up calling `.toLowerCase()` on `undefined`,
-and an Error will be thrown.
-
+Let's say we want to get everyone's last name, lowercased.
+Since "Moc" doesn't have a last name, attempt to call `.toLowerCase()` on undefined will throw an Error.
 We want to call `.toLowerCase()` only when we have something to call on.
 
 ```javascript

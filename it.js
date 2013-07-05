@@ -85,6 +85,12 @@ var It = (function() {
         return value && func(value)
       })
     },
+    not: function(func) {
+      if (!func) func = It
+      return this.compose(function(value) {
+        return !func(value)
+      })
+    },
     instantiate: function(Constructor) {
       return this.compose(function(value) {
         return new Constructor(value)

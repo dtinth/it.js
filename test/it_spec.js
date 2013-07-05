@@ -21,6 +21,8 @@ describe('It', function() {
         }
       },
       c = {
+        t: true,
+        f: false,
         getContext: function() { return this },
         getArgs: getArgs
       }
@@ -180,6 +182,29 @@ describe('It', function() {
       expect(It.fcall(3)(getArgs)).to.deep.equal([3])
       expect(It.fcall(2, 3)(getArgs)).to.deep.equal([2, 3])
       expect(It.fcall(1, 2, 3)(getArgs)).to.deep.equal([1, 2, 3])
+    })
+  })
+
+  describe('.not', function() {
+    it('should return boolean negative of passed function argument', function() {
+      expect(It.not(It)(1)).to.equal(false)
+      expect(It.not(It)(0)).to.equal(true)
+    })
+    it('should use identity function when none is supplied', function() {
+      expect(It.not()(1)).to.equal(false)
+      expect(It.not()(0)).to.equal(true)
+    })
+    it('should be chainable', function() {
+      expect(It.not(It.get('t'))(c)).to.equal(false)
+      expect(It.not(It.get('f'))(c)).to.equal(true)
+      expect(It.get('t').not()(c)).to.equal(false)
+      expect(It.get('f').not()(c)).to.equal(true)
+    })
+    it('should work with .self (that is, preserves context)', function() {
+      expect(It.self.not(It.get('t')).call(c)).to.equal(false)
+      expect(It.self.not(It.get('f')).call(c)).to.equal(true)
+      expect(It.self.get('t').not().call(c)).to.equal(false)
+      expect(It.self.get('f').not().call(c)).to.equal(true)
     })
   })
 
