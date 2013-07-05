@@ -53,6 +53,10 @@ instead of this:
 function(person) { return person.first.length }
 ```
 
+And a lot more functionalities (see the quick reference).
+Thanks to awesome functional programming and metaprogramming stuff,
+this library is just around ~200 lines of code in a single file, and ~3k minified.
+
 Installation
 ------------
 
@@ -74,6 +78,7 @@ Browser:
 
 Quick Reference
 ---------------
+
 ~~~javascript
 It                             -> return it
 It.self                        -> return this

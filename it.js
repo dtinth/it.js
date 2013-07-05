@@ -196,18 +196,7 @@ var It = (function() {
     It.op[op] = fun
     It.extend(object)
   }
-  operator('===')
-  operator('==')
-  operator('!==')
-  operator('!=')
-  operator('>')
-  operator('>=')
-  operator('<')
-  operator('<=')
-  operator('+')
-  operator('-')
-  operator('*')
-  operator('/')
+  It.splat(operator)(['===', '==', '!==', '!=', '>', '>=', '<', '<=', '+', '-', '*', '/'])
 
   return It
 
