@@ -6,9 +6,11 @@ for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
 It complements nicely with [Underscore.js](http://documentcloud.github.io/underscore/)
 (but it does not depend on, and can be used without underscore).
 
-This library is inspired by the article
-[Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md)
-by Reginald Braithwaite, but I want it to look more fluent and chainable.
+This library is inspired by:
+
+* [Combinator Recipes for Working With Objects in JavaScript](https://github.com/raganwald/homoiconic/blob/master/2012/12/combinators_1.md) by Reginald Braithwaite
+* [Q](https://github.com/kriskowal/q) by kriskowal
+* [underscore.js](http://underscorejs.org/) by DocumentCloud
 
 tldr
 ----
@@ -70,6 +72,8 @@ It.self                  -> return this
 .post('foo', [...args])  -> return it.foo(...args)
 .fapply([...args])       -> return it(...args)
 .not(fun)                -> return !fun(it)
+.splat(fun)              -> return Array.prototype.map.call(it, fun)
+.pluck('foo')            -> return Array.prototype.map.call(it, function(o) { return o.foo })
 ~~~
 
 example.js
@@ -167,6 +171,20 @@ console.log(_.sortBy(strings, upcase))
 [ 'a', 'Book', 'is', 'this' ]
 ```
 
+.splat
+------
+Use `.splat(function)` to map an array over that function
+
+```javascript
+var upcaseAll = It.splat(upcase)
+console.log(upcaseAll(strings))
+```
+
+
+```
+[ 'THIS', 'IS', 'A', 'BOOK' ]
+```
+
 Chaining
 --------
 Of course, all of these are chainable.
@@ -249,24 +267,6 @@ console.log(addressBook)
     score: 0 },
   { first: 'Betu', last: 'Jol', phone: '(219) 234-9591', score: 0 },
   { first: 'Fuhetu', last: 'Ra', phone: '(631) 437-2332', score: 0 } ]
-```
-
-Methods inspired from Q.
----
-
-Many methods are inspired from kriskowal's [Q](https://npmjs.org/package/q) library.
-So this library also offers the same methods as Q's:
-
-```
-value.foo             It.get('foo')(value)
-value.foo = x         It.set('foo', x)(value)
-                      It.put('foo', x)(value)
-delete value.foo      It.del('foo')(value)
-value.foo(...args)    It.post('foo', [...args])(value)
-                      It.send('foo', ...args)(value)
-                      It.invoke('foo', ...args)(value)
-value(...args)        It.fapply([...args])
-                      It.fcall(...args)
 ```
 
 .not
@@ -428,9 +428,7 @@ You can use `.compose` to compose your own functionality.
 Here we have these vectors...
 
 ```javascript
-var vectors = [
-  { x: 1, y: 5 }, { x: 5, y: 1 }, { x: 2, y: -3 }
-]
+var vectors = [ [1, 5], [5, 1], [2, -3] ]
 ```
 
 We also have a square function...
@@ -444,8 +442,8 @@ function square(x) {
 Let's get the square of x and y components of these vectors!
 
 ```javascript
-console.log(_.map(vectors, It.get('x').compose(square)))
-console.log(_.map(vectors, It.get('y').compose(square)))
+console.log(_.map(vectors, It.get(0).compose(square)))
+console.log(_.map(vectors, It.get(1).compose(square)))
 ```
 
 
