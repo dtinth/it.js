@@ -14,6 +14,9 @@
 // * [Q](https://github.com/kriskowal/q) by kriskowal
 // * [underscore.js](http://underscorejs.org/) by DocumentCloud
 // * [LiveScript](http://livescript.net/) for stuff like (+), (+ 1), (.test()), (.foo)
+//
+// See also: [my blog post about cool things you can do with it.js](http://me.dt.in.th/page/it)
+// (a more concise, less complete version of this example)
 
 
 // tldr
