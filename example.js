@@ -444,8 +444,8 @@ console.log(_.sortBy(things, It.get('type').compose(where)))
 
 
 
-// ['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/']
-// ------------------------------------------------------------------------------------------
+// ['==='], ['=='], ['!=='], ['!='], ['>'], ['>='], ['<'], ['<='], ['+'], ['-'], ['*'], ['/'], ['%']
+// -------------------------------------------------------------------------------------------------
 // These functions can be used to check against the given value...
 //
 // There are so many different conventions on how to name each of these functions.
@@ -473,7 +473,23 @@ console.log(_.reduce([1,2,3,4,5], It['+']))
 // .select / .filter
 // -----------------
 // Just like `.splat(fun)` that runs [].map(fun) over passed array,
-// `.select(fun)` runs [].filter(fn) over passed array.
+// `.select(fun)` runs [].filter(fun) over passed array.
+
+// ---
+//
+// Using ['%'], we can generate even and odd functions quickly.
+
+var odd = It['%'](2)
+var even = It.not(odd)
+
+// Then we can filter the even and odd numbers.
+
+var onlyEven = It.select(even)
+var onlyOdd = It.select(odd)
+
+console.log(onlyEven(numbers))
+console.log(onlyOdd(numbers))
+
 
 
 // ---

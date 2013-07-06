@@ -202,7 +202,7 @@ var It = (function() {
     It.op[op] = fun
     It.extend(object)
   }
-  It.splat(operator)(['===', '==', '!==', '!=', '>', '>=', '<', '<=', '+', '-', '*', '/'])
+  It.splat(operator)(['===', '==', '!==', '!=', '>', '>=', '<', '<=', '+', '-', '*', '/', '%'])
 
   return It
 

@@ -286,6 +286,7 @@ describe('It', function() {
     describeOperator('-', [ -1, 0, 1, 2 ])
     describeOperator('*', [ 2, 4, 6, 8 ])
     describeOperator('/', [ 0.5, 1, 1.5, 2 ])
+    describeOperator('%', [ 1, 0, 1, 0 ])
 
   })
   
