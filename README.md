@@ -1,4 +1,4 @@
-it.js
+it.js [![Build Status](https://travis-ci.org/dtinth/it.js.png?branch=master)](https://travis-ci.org/dtinth/it.js)
 ==
 
 `it.js` is a library to make it easier to create accessor/iterator functions,
