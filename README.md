@@ -1,5 +1,5 @@
 it.js [![Build Status](https://travis-ci.org/dtinth/it.js.png?branch=master)](https://travis-ci.org/dtinth/it.js)
-==
+===
 
 `it.js` is a library to make it easier to create accessor/iterator functions,
 for use with things like `_.map`, `_.filter`, `_.sortBy`, `_.each`, and so on...
